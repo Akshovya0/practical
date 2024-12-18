@@ -1,0 +1,24 @@
+pip install nltk
+
+
+import nltk
+from nltk.tree import Tree
+phrase_tree = Tree('S', [
+Tree('NP', [
+Tree('DT', ['The']),
+Tree('NN', ['cat'])
+]),
+Tree('VP', [
+Tree('VBZ', ['sits']),
+Tree('PP', [
+Tree('IN', ['on']),
+Tree('NP', [
+Tree('DT', ['the']),
+Tree('NN', ['mat'])
+])
+])
+])
+])
+print("Phrase Tree:")
+print(phrase_tree)
+phrase_tree.draw()
