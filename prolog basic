@@ -1,0 +1,5 @@
+bird(sparrow).
+bird(eagle).
+tree(oak).
+tree(pine).
+provides_shade(X) :- tree(X).
