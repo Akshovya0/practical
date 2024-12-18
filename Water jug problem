@@ -1,0 +1,107 @@
+#include <iostream>
+
+using namespace std;
+
+class Jug {
+    int capacity;
+    int value;
+
+public:
+ 
+    Jug(int n) {
+        capacity = n;
+        value = 0;
+    }
+
+   
+    void Fill() {
+        value = capacity;
+    }
+
+    void Empty() {
+        value = 0;
+    }
+
+    bool isFull() {
+        return value >= capacity;
+    }
+
+    bool isEmpty() {
+        return value == 0;
+    }
+
+    void operator[](Jug &B) {
+        int old_value = value;
+        value = value + B.value;
+        value = value > capacity ? capacity : value;
+        B.value = B.value - (value - old_value);
+    }
+
+    int getValue() {
+        return value;
+    }
+};
+
+int gcd(int n, int m) {
+    if (m <= n && n % m == 0)
+        return m;
+    if (n < m)
+        return gcd(m, n);
+    return gcd(m, n % m);
+}
+
+bool check(int a, int b, int c) {
+    if (c > max(a, b)) {
+        cout << "Required water exceeds jug capacities!\n";
+        return false;
+    }
+    if (c % gcd(a, b) != 0) {
+        cout << "Cannot measure this amount with given jugs.\n";
+        return false;
+    }
+    return true;
+}
+
+void solve(Jug A, Jug B, int result) {
+    while (A.getValue() != result && B.getValue() != result) {
+        if (A.isEmpty()) {
+            cout << "Fill A\n";
+            A.Fill();
+        } else if (B.isFull()) {
+            cout << "Empty B\n";
+            B.Empty();
+        } else {
+            cout << "Pour from A into B\n";
+            B[A];
+        }
+        cout << "(A, B) = (" << A.getValue() << ", " << B.getValue() << ")\n";
+    }
+}
+
+int main() {
+    int a, b, result;
+
+    cout << "Enter capacity of A: ";
+    cin >> a;
+    cout << "Enter capacity of B: ";
+    cin >> b;
+
+    if (a <= 0 || b <= 0) {
+        cout << "Jug capacities must be positive integers.\n";
+        return 1;
+    }
+
+    do {
+        cout << "Enter required water in A: ";
+        cin >> result;
+    } while (!check(a, b, result));
+
+    Jug A(a), B(b);
+
+    cout << "\n(A, B) = (" << A.getValue() << ", " << B.getValue() << ")\n";
+
+    solve(A, B, result);
+    cout << "Done!" << endl;
+
+    return 0;
+}
