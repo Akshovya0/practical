@@ -1,0 +1,125 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <climits>
+
+#define MAX_NODES 10
+#define INF 9999
+
+using namespace std;
+
+// Structure to represent each node in the frontier with cost and heuristic values
+struct Node {
+    int node;
+    int cost;
+    int heuristic;
+    Node(int n, int c, int h) : node(n), cost(c), heuristic(h) {}
+};
+
+// Global variables for the graph and heuristic values
+int graph[MAX_NODES][MAX_NODES];
+int heuristic[MAX_NODES];
+
+// Function to initialize the graph and heuristic values
+void initializeGraph() {
+    for (int i = 0; i < MAX_NODES; ++i) {
+        for (int j = 0; j < MAX_NODES; ++j) {
+            graph[i][j] = INF;
+        }
+        heuristic[i] = INF;
+    }
+}
+
+// Function to add an edge with a specific cost between two nodes
+void addEdge(int source, int destination, int cost) {
+    graph[source][destination] = cost;
+}
+
+// Function to set the heuristic value for a node
+void setHeuristic(int node, int value) {
+    heuristic[node] = value;
+}
+
+// A* search algorithm to find the shortest path from start to goal
+void aStarSearch(int start, int goal) {
+    // Min-heap priority queue with pair of (total_cost, node)
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> frontier;
+    vector<bool> visited(MAX_NODES, false);
+    vector<int> parent(MAX_NODES, -1);
+
+    frontier.push({0, start});
+    visited[start] = true;
+
+    while (!frontier.empty()) {
+        auto [currentCost, currentNode] = frontier.top();
+        frontier.pop();
+
+        // If goal is reached, reconstruct and print the path
+        if (currentNode == goal) {
+            vector<int> path;
+            for (int node = goal; node != -1; node = parent[node]) {
+                path.push_back(node);
+            }
+            reverse(path.begin(), path.end());
+            cout << "Path: ";
+            for (int node : path) {
+                cout << node << (node == goal ? "\n" : " -> ");
+            }
+            return;
+        }
+
+        // Explore neighbors of the current node
+        for (int nextNode = 0; nextNode < MAX_NODES; ++nextNode) {
+            int cost = graph[currentNode][nextNode];
+            if (cost != INF && !visited[nextNode]) {
+                int newCost = currentCost + cost;
+                int priority = newCost + heuristic[nextNode];
+                frontier.push({priority, nextNode});
+                parent[nextNode] = currentNode;
+                visited[nextNode] = true;
+            }
+        }
+    }
+
+    cout << "No path found." << endl;
+}
+
+// Main function to take user input and run the A* search
+int main() {
+    initializeGraph();
+
+    int numNodes, numEdges;
+    cout << "Enter the number of nodes: ";
+    cin >> numNodes;
+
+    cout << "Enter the number of edges: ";
+    cin >> numEdges;
+    cout << "Enter the edges in the format: source destination cost" << endl;
+    for (int i = 0; i < numEdges; ++i) {
+        int source, destination, cost;
+        cin >> source >> destination >> cost;
+        addEdge(source, destination, cost);
+    }
+
+    cout << "Enter the heuristic values for each node:" << endl;
+    for (int i = 0; i < numNodes; ++i) {
+        int value;
+        cout << "Node " << i << ": ";
+        cin >> value;
+        setHeuristic(i, value);
+    }
+
+    int startNode, goalNode;
+    cout << "Enter the start node: ";
+    cin >> startNode;
+    cout << "Enter the goal node: ";
+    cin >> goalNode;
+
+    cout << "\nA* Search:" << endl;
+    cout << "Start Node: " << startNode << endl;
+    cout << "Goal Node: " << goalNode << endl;
+    aStarSearch(startNode, goalNode);
+
+    return 0;
+}
