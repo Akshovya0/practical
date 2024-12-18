@@ -1,0 +1,6 @@
+fruit(apple) :- is_true("is red"), is_true("is sweet"). 
+fruit(banana) :- is_true("is yellow"), is_true("is sweet"). fruit(lemon) :- is_true("is yellow"), is_true("is sour"). 
+is_true(Q):-
+               
+format(“~s?\n", [Q]),     
+read(yes).
