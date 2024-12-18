@@ -1,0 +1,55 @@
+class VacuumCleaner:
+ def __init__(self, grid):
+ self.grid = grid
+self.rows = len(grid)
+self.cols = len(grid[0]) 
+self.position = (0, 0) 
+self.cleaned_cells = 0
+
+def display_grid(self):
+ for row in self.grid:
+ print(row)
+ print("\n")
+
+def is_dirty(self, x, y): 
+return self.grid[x][y] == 1
+
+def clean_cell(self, x, y): 
+if self.grid[x][y] == 1: 
+self.grid[x][y] = 0 
+self.cleaned_cells += 1 
+print(f"Cleaned cell at ({x}, {y})")
+
+def move(self, x, y):
+ if 0 <= x < self.rows and 0 <= y < self.cols:
+ self.position = (x, y)
+ print(f"Moved to ({x}, {y})") 
+return True
+ else:
+ print(f"Cannot move to ({x}, {y}) - Out of bounds")
+ return False
+
+def run(self):
+ print("Initial Environment:")
+ self.display_grid()
+
+for i in range(self.rows):
+ for j in range(self.cols):
+self.move(i, j)
+
+if self.is_dirty(i, j):
+ self.clean_cell(i, j)
+
+print("\nAll cells cleaned!") 
+print("Final Environment:") 
+self.display_grid()
+
+grid = [ 
+[1, 0, 1],
+[1, 1, 0],
+[0, 1, 1]
+ ]
+
+vacuum = VacuumCleaner(grid)
+
+vacuum.run()
