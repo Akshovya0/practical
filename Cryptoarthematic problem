@@ -1,0 +1,85 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+vector<int> values;
+vector<char> letters;
+
+int pos(char c) {
+    for (int i = 0; i < letters.size(); ++i) {
+        if (letters[i] == c) return i;
+    }
+    return -1;
+}
+
+int convertWord(const string& word) {
+    int num = 0;
+    for (char c : word) {
+        num = num * 10 + values[pos(c)];
+    }
+    return num;
+}
+
+void solveCryptoarithmetic(string w1, string w2, string w3) {
+    set<char> uniqueLetters;
+    
+    uniqueLetters.insert(w1.begin(), w1.end());
+    uniqueLetters.insert(w2.begin(), w2.end());
+    uniqueLetters.insert(w3.begin(), w3.end());
+
+    if (uniqueLetters.size() > 10) {
+        cout << "Something is wrong with the input (more than 10 unique letters)." << endl;
+        return;
+    }
+
+    letters.assign(uniqueLetters.begin(), uniqueLetters.end());
+    int l4 = letters.size();
+    values.resize(l4, 0);
+
+    vector<int> digits(10);
+    for (int i = 0; i < 10; ++i) digits[i] = i;
+
+    do {
+        // Assign the current permutation of digits to the values vector
+        for (int i = 0; i < l4; ++i) {
+            values[i] = digits[i];
+        }
+
+        if (values[pos(w1[0])] == 0 || values[pos(w2[0])] == 0 || values[pos(w3[0])] == 0) {
+            continue;
+        }
+
+        int n1 = convertWord(w1);
+        int n2 = convertWord(w2);
+        int n3 = convertWord(w3);
+
+        if (n1 + n2 == n3) {
+            cout << "\nSolution found:\n";
+            for (int i = 0; i < l4; ++i) {
+                cout << letters[i] << " = " << values[i] << endl;
+            }
+            return;
+        }
+
+    } while (next_permutation(digits.begin(), digits.end()));
+
+    cout << "\nNo solution found" << endl;
+}
+
+int main() {
+    string w1, w2, w3;
+    cout << "Enter the first word: ";
+    cin >> w1;
+    cout << "Enter the second word: ";
+    cin >> w2;
+    cout << "Enter the sum word: ";
+    cin >> w3;
+
+    solveCryptoarithmetic(w1, w2, w3);
+
+    return 0;
+}
